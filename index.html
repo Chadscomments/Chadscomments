@@ -201,20 +201,44 @@
     </div>
   </div>
 
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
   <script>
-    function postComment() {
+    // REPLACE these with your own Supabase project URL and anon key
+    const supabaseUrl = 'https://YOUR-PROJECT.supabase.co';
+    const supabaseAnonKey = 'YOUR-ANON-KEY';
+    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+    async function postComment() {
       const user = document.getElementById("username").value.trim();
       const comment = document.getElementById("comment").value.trim();
-      if (user && comment) {
-        document.getElementById("msg").innerText = "✅ Comment posted!";
-        setTimeout(() => {
-          document.getElementById("msg").innerText = "";
-          document.getElementById("username").value = "";
-          document.getElementById("comment").value = "";
-        }, 2000);
-      } else {
-        document.getElementById("msg").innerText = "⚠️ Please fill both fields.";
+      const msgEl = document.getElementById("msg");
+
+      if (!user || !comment) {
+        msgEl.innerText = "⚠️ Please fill both fields.";
+        return;
       }
+
+      msgEl.innerText = "⏳ Posting...";
+
+      try {
+        const { data, error } = await supabase
+          .from('comments')
+          .insert([{ username: user, comment: comment }]);
+
+        if (error) throw error;
+
+        msgEl.innerText = "✅ Comment posted!";
+        document.getElementById("username").value = "";
+        document.getElementById("comment").value = "";
+      } catch (error) {
+        msgEl.innerText = "❌ Failed to post comment.";
+        console.error(error);
+      }
+
+      setTimeout(() => {
+        msgEl.innerText = "";
+      }, 3000);
     }
   </script>
 </body>
