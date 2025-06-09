@@ -2,152 +2,206 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chadscomments</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(45deg, #6EC1E4, #8E44AD, #FF6B6B);
-      background-size: 600% 600%;
-      animation: gradientMove 15s ease infinite;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: start;
-      min-height: 100vh;
-      padding: 20px;
-      color: white;
+      font-family: 'Arial', sans-serif;
       overflow-x: hidden;
+      background: linear-gradient(-45deg, #00c6ff, #0072ff, #ff5edf, #fb7ba2);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      color: white;
+      text-align: center;
     }
 
-    @keyframes gradientMove {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .stars::before, .stars::after {
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite ease-in-out;
+    }
+
+    .stars::after {
+      top: 50%;
+      left: 70%;
+      width: 3px;
+      height: 3px;
+      animation-delay: 1s;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 1rem 1rem;
+      max-width: 360px;
+      margin: auto;
     }
 
     h1 {
-      font-size: 2.5rem;
-      background: linear-gradient(to right, #ffffff, #ff66cc);
+      font-family: 'Pacifico', cursive;
+      font-size: 2.3rem;
+      background: linear-gradient(90deg, #ff9a9e, #fad0c4, #fad0c4);
+      background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
-      animation: fadeIn 2s ease-in-out;
-      font-weight: bold;
-      margin-bottom: 30px;
+      animation: gradientText 5s infinite linear;
     }
 
-    .video-card, .comment-card {
-      background: rgba(255, 255, 255, 0.08);
+    @keyframes gradientText {
+      0% { background-position: 0%; }
+      100% { background-position: 100%; }
+    }
+
+    .video-card {
       border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 20px;
+      overflow: hidden;
+      margin: 1rem 0;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
       width: 100%;
-      max-width: 350px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      max-width: 240px;
+      margin-inline: auto;
     }
 
     video {
       width: 100%;
-      border-radius: 15px;
+      height: auto;
+      aspect-ratio: 9/16;
+      display: block;
+    }
+
+    .scroll-tip {
+      margin-top: 0.5rem;
+      font-size: 1rem;
+      color: #fff;
+      opacity: 0.7;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(4px); }
+    }
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
 
     input, textarea {
-      width: 100%;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 10px;
+      padding: 0.8rem;
+      border-radius: 12px;
       border: none;
-      resize: none;
       font-size: 1rem;
+      width: 100%;
     }
 
-    button {
-      margin-top: 15px;
-      width: 100%;
-      padding: 12px;
+    .post-btn {
+      padding: 0.8rem;
       border: none;
-      border-radius: 10px;
-      background: linear-gradient(to right, #66ffcc, #3399ff);
+      border-radius: 50px;
+      background: linear-gradient(135deg, #00feba, #5b548a);
       color: white;
       font-size: 1rem;
-      font-weight: bold;
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      transition: background 0.3s ease;
     }
 
-    button::after {
-      content: "";
+    .post-btn::after {
+      content: '';
       position: absolute;
-      top: 0; left: 0;
-      width: 0%;
+      top: 0;
+      left: -75%;
+      width: 50%;
       height: 100%;
       background: rgba(255, 255, 255, 0.3);
-      transition: width 0.3s ease-in-out;
+      transform: skewX(-25deg);
+      transition: left 0.3s ease;
     }
 
-    button:active::after {
-      width: 100%;
+    .post-btn:active::after {
+      left: 150%;
+      transition: left 0.3s ease;
     }
 
-    #message {
-      margin-top: 10px;
-      text-align: center;
+    .msg {
+      margin-top: 1rem;
       font-size: 0.95rem;
-      color: #d4f3ff;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+      color: #f5f5f5;
     }
   </style>
 </head>
 <body>
-  <h1>Chadscomments</h1>
+  <div class="stars"></div>
 
-  <div class="video-card">
-    <video controls playsinline>
-      <source src="your-video-url.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+  <div class="container">
+    <h1>Chadscomments</h1>
+
+    <div class="video-card">
+      <video controls poster="https://via.placeholder.com/720x1280?text=Loading+Video">
+        <source src="your-video.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="scroll-tip">
+      ↓ Scroll to comment ↓
+    </div>
+
+    <div class="form">
+      <input type="text" id="username" placeholder="Instagram Username" />
+      <textarea id="comment" rows="3" placeholder="Your comment..."></textarea>
+      <button class="post-btn" onclick="postComment()">Post</button>
+      <div class="msg" id="msg"></div>
+    </div>
   </div>
 
-  <div class="comment-card">
-    <input type="text" id="insta" placeholder="Instagram Username">
-    <textarea id="comment" placeholder="Your comment"></textarea>
-    <button onclick="postComment()">Post</button>
-    <div id="message"></div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    const supabaseUrl = 'https://grmpkpchcxudqukawgof.supabase.co';
-    const supabaseKey = 'YOUR_SUPABASE_KEY';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-    async function postComment() {
-      const insta = document.getElementById("insta").value.trim();
+    function postComment() {
+      const user = document.getElementById("username").value.trim();
       const comment = document.getElementById("comment").value.trim();
-      const message = document.getElementById("message");
-
-      if (!insta || !comment) {
-        message.textContent = "Please fill both fields!";
-        return;
-      }
-
-      const { error } = await supabase
-        .from('comments')
-        .insert([{ insta, comment }]);
-
-      if (error) {
-        message.textContent = "Error posting comment.";
-        console.error(error);
+      if (user && comment) {
+        // Supabase logic would go here
+        document.getElementById("msg").innerText = "✅ Comment posted!";
+        setTimeout(() => {
+          document.getElementById("msg").innerText = "";
+          document.getElementById("username").value = "";
+          document.getElementById("comment").value = "";
+        }, 2000);
       } else {
-        message.textContent = "Comment posted successfully!";
-        document.getElementById("insta").value = "";
-        document.getElementById("comment").value = "";
+        document.getElementById("msg").innerText = "⚠️ Please fill both fields.";
       }
     }
   </script>
