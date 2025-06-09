@@ -132,6 +132,7 @@
       cursor: pointer;
       position: relative;
       overflow: hidden;
+      transition: background 0.3s ease;
     }
 
     .post-btn::after {
@@ -148,6 +149,11 @@
 
     .post-btn:active::after {
       left: 150%;
+    }
+
+    .post-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
     }
 
     .msg {
@@ -204,7 +210,6 @@
   <!-- Supabase JS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
   <script>
-    // REPLACE these with your own Supabase project URL and anon key
     const supabaseUrl = 'https://grmpkpchcxudqukawgof.supabase.co';
     const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdybXBrcGNoY3h1ZHF1a2F3Z29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzODA3NDEsImV4cCI6MjA2NDk1Njc0MX0.cn8ixJqrdm-HyV9DonoRK-0nZLHm1jLymjv6lzmlOyk';
     const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
@@ -213,12 +218,14 @@
       const user = document.getElementById("username").value.trim();
       const comment = document.getElementById("comment").value.trim();
       const msgEl = document.getElementById("msg");
+      const btn = document.querySelector(".post-btn");
 
       if (!user || !comment) {
         msgEl.innerText = "⚠️ Please fill both fields.";
         return;
       }
 
+      btn.disabled = true;
       msgEl.innerText = "⏳ Posting...";
 
       try {
@@ -234,11 +241,10 @@
       } catch (error) {
         msgEl.innerText = "❌ Failed to post comment.";
         console.error(error);
+      } finally {
+        btn.disabled = false;
+        setTimeout(() => { msgEl.innerText = ""; }, 3000);
       }
-
-      setTimeout(() => {
-        msgEl.innerText = "";
-      }, 3000);
     }
   </script>
 </body>
