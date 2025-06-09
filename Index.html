@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chadscomments</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(45deg, #6EC1E4, #8E44AD, #FF6B6B);
+      background-size: 600% 600%;
+      animation: gradientMove 15s ease infinite;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      min-height: 100vh;
+      padding: 20px;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientMove {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(to right, #ffffff, #ff66cc);
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: fadeIn 2s ease-in-out;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .video-card, .comment-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 350px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    video {
+      width: 100%;
+      border-radius: 15px;
+    }
+
+    input, textarea {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      resize: none;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(to right, #66ffcc, #3399ff);
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 0%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: width 0.3s ease-in-out;
+    }
+
+    button:active::after {
+      width: 100%;
+    }
+
+    #message {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #d4f3ff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>Chadscomments</h1>
+
+  <div class="video-card">
+    <video controls playsinline>
+      <source src="your-video-url.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="comment-card">
+    <input type="text" id="insta" placeholder="Instagram Username">
+    <textarea id="comment" placeholder="Your comment"></textarea>
+    <button onclick="postComment()">Post</button>
+    <div id="message"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseUrl = 'https://grmpkpchcxudqukawgof.supabase.co';
+    const supabaseKey = 'YOUR_SUPABASE_KEY';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function postComment() {
+      const insta = document.getElementById("insta").value.trim();
+      const comment = document.getElementById("comment").value.trim();
+      const message = document.getElementById("message");
+
+      if (!insta || !comment) {
+        message.textContent = "Please fill both fields!";
+        return;
+      }
+
+      const { error } = await supabase
+        .from('comments')
+        .insert([{ insta, comment }]);
+
+      if (error) {
+        message.textContent = "Error posting comment.";
+        console.error(error);
+      } else {
+        message.textContent = "Comment posted successfully!";
+        document.getElementById("insta").value = "";
+        document.getElementById("comment").value = "";
+      }
+    }
+  </script>
+</body>
+</html>
