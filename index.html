@@ -232,7 +232,7 @@
 
       try {
         const { error } = await supabase
-          .from('comments')
+          .from('Comments')
           .insert([{ username: user, comment }]);
 
         if (error) throw error;
