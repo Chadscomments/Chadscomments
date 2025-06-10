@@ -194,8 +194,8 @@
 
     <div class="video-card">
       <video controls poster="https://via.placeholder.com/720x1280?text=Loading+Video">
-  <source src="https://raw.githubusercontent.com/Chadscomments/Chadscomments/main/Funnyvideo1.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
+        <source src="https://raw.githubusercontent.com/Chadscomments/Chadscomments/main/Funnyvideo1.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
       </video>
     </div>
 
@@ -212,7 +212,7 @@
   <script>
     const supabaseUrl = 'https://grmpkpchcxudqukawgof.supabase.co';
     const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdybXBrcGNoY3h1ZHF1a2F3Z29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzODA3NDEsImV4cCI6MjA2NDk1Njc0MX0.cn8ixJqrdm-HyV9DonoRK-0nZLHm1jLymjv6lzmlOyk';
-    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+    const client = supabase.createClient(supabaseUrl, supabaseAnonKey); // ✅ Changed variable name
 
     async function postComment() {
       const user = document.getElementById("username").value.trim();
@@ -229,7 +229,7 @@
       msgEl.innerText = "⏳ Posting...";
 
       try {
-        const { data, error } = await supabase
+        const { data, error } = await client
           .from('comments')
           .insert([{ username: user, comment: comment }]);
 
@@ -239,8 +239,8 @@
         document.getElementById("username").value = "";
         document.getElementById("comment").value = "";
       } catch (error) {
-  msgEl.innerText = "❌ Failed to post comment.";
-  console.error("Error details:", error); // This helps debug further
+        msgEl.innerText = "❌ Failed to post comment.";
+        console.error("Error details:", error);
       } finally {
         btn.disabled = false;
         setTimeout(() => { msgEl.innerText = ""; }, 3000);
