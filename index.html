@@ -239,8 +239,8 @@
         document.getElementById("username").value = "";
         document.getElementById("comment").value = "";
       } catch (error) {
-        msgEl.innerText = "❌ Failed to post comment.";
-        console.error(error);
+  msgEl.innerText = "❌ Failed to post comment.";
+  console.error("Error details:", error); // This helps debug further
       } finally {
         btn.disabled = false;
         setTimeout(() => { msgEl.innerText = ""; }, 3000);
