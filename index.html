@@ -207,14 +207,16 @@
     </div>
   </div>
 
-  <!-- Supabase JS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
-  <script>
+  <!-- Load Supabase and Initialize it -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
     const supabaseUrl = 'https://grmpkpchcxudqukawgof.supabase.co';
     const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdybXBrcGNoY3h1ZHF1a2F3Z29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzODA3NDEsImV4cCI6MjA2NDk1Njc0MX0.cn8ixJqrdm-HyV9DonoRK-0nZLHm1jLymjv6lzmlOyk';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey); // ✅ FIXED
 
-    async function postComment() {
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    window.postComment = async function () {
       const user = document.getElementById("username").value.trim();
       const comment = document.getElementById("comment").value.trim();
       const msgEl = document.getElementById("msg");
@@ -229,9 +231,9 @@
       msgEl.innerText = "⏳ Posting...";
 
       try {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('comments')
-          .insert([{ username: user, comment: comment }]);
+          .insert([{ username: user, comment }]);
 
         if (error) throw error;
 
@@ -245,7 +247,7 @@
         btn.disabled = false;
         setTimeout(() => { msgEl.innerText = ""; }, 3000);
       }
-    }
+    };
   </script>
 </body>
 </html>
