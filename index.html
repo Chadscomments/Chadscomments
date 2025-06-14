@@ -4,13 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chadscomments</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Arial', sans-serif;
@@ -21,47 +18,36 @@
       color: white;
       text-align: center;
     }
-
     @keyframes gradientBG {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-
     .stars {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: transparent;
       z-index: 0;
       pointer-events: none;
     }
-
     .stars::before, .stars::after {
       content: "";
       position: absolute;
-      width: 2px;
-      height: 2px;
+      width: 2px; height: 2px;
       background: white;
       border-radius: 50%;
       animation: twinkle 2s infinite ease-in-out;
     }
-
     .stars::after {
-      top: 50%;
-      left: 70%;
-      width: 3px;
-      height: 3px;
+      top: 50%; left: 70%;
+      width: 3px; height: 3px;
       animation-delay: 1s;
     }
-
     @keyframes twinkle {
       0%, 100% { opacity: 0.2; }
       50% { opacity: 1; }
     }
-
     .container {
       position: relative;
       z-index: 1;
@@ -75,7 +61,6 @@
       min-height: 100vh;
       gap: 1rem;
     }
-
     h1 {
       font-family: 'Pacifico', cursive;
       font-size: 2.2rem;
@@ -86,12 +71,10 @@
       animation: gradientText 5s infinite linear;
       margin-bottom: 0.5rem;
     }
-
     @keyframes gradientText {
       0% { background-position: 0%; }
       100% { background-position: 100%; }
     }
-
     .video-card {
       border-radius: 20px;
       overflow: hidden;
@@ -99,13 +82,11 @@
       width: 160px;
       aspect-ratio: 9/16;
     }
-
     video {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
     .form {
       display: flex;
       flex-direction: column;
@@ -113,7 +94,6 @@
       width: 100%;
       padding: 0 1rem;
     }
-
     input, textarea {
       padding: 0.7rem;
       border-radius: 12px;
@@ -121,7 +101,6 @@
       font-size: 0.9rem;
       width: 100%;
     }
-
     .post-btn {
       padding: 0.8rem;
       border: none;
@@ -134,7 +113,6 @@
       overflow: hidden;
       transition: background 0.3s ease;
     }
-
     .post-btn::after {
       content: '';
       position: absolute;
@@ -146,43 +124,33 @@
       transform: skewX(-25deg);
       transition: left 0.3s ease;
     }
-
     .post-btn:active::after {
       left: 150%;
     }
-
     .post-btn:disabled {
       cursor: not-allowed;
       opacity: 0.6;
     }
-
     .msg {
       font-size: 0.85rem;
       color: #f5f5f5;
       height: 1.2rem;
     }
-
     @media (max-height: 640px) {
-      .container {
-        gap: 0.7rem;
-      }
-
-      h1 {
-        font-size: 1.8rem;
-      }
-
-      .video-card {
-        width: 140px;
-      }
-
-      input, textarea {
-        font-size: 0.8rem;
-        padding: 0.6rem;
-      }
-
-      .post-btn {
-        font-size: 0.9rem;
-      }
+      .container { gap: 0.7rem; }
+      h1 { font-size: 1.8rem; }
+      .video-card { width: 140px; }
+      input, textarea { font-size: 0.8rem; padding: 0.6rem; }
+      .post-btn { font-size: 0.9rem; }
+    }
+    footer {
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    footer a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
     }
   </style>
 </head>
@@ -200,54 +168,80 @@
     </div>
 
     <div class="form">
+      <input type="text" id="videoUrl" placeholder="Your Reel URL" />
       <input type="text" id="username" placeholder="Instagram Username" />
       <textarea id="comment" rows="2" placeholder="Your comment..."></textarea>
-      <button class="post-btn" onclick="postComment()">Post</button>
+      <button class="post-btn" onclick="startPayment()">Post</button>
       <div class="msg" id="msg"></div>
     </div>
   </div>
 
-  <!-- Load Supabase and Initialize it -->
+  <footer>
+    <a href="privacy.html">Privacy Policy</a> |
+    <a href="refund.html">Refund Policy</a> |
+    <a href="terms.html">Terms & Conditions</a>
+  </footer>
+
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
     const supabaseUrl = 'https://grmpkpchcxudqukawgof.supabase.co';
-    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdybXBrcGNoY3h1ZHF1a2F3Z29mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzODA3NDEsImV4cCI6MjA2NDk1Njc0MX0.cn8ixJqrdm-HyV9DonoRK-0nZLHm1jLymjv6lzmlOyk';
-
+    const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-    window.postComment = async function () {
+    window.startPayment = function () {
       const user = document.getElementById("username").value.trim();
       const comment = document.getElementById("comment").value.trim();
+      const video = document.getElementById("videoUrl").value.trim();
       const msgEl = document.getElementById("msg");
-      const btn = document.querySelector(".post-btn");
 
-      if (!user || !comment) {
-        msgEl.innerText = "⚠️ Please fill both fields.";
+      if (!user || !comment || !video) {
+        msgEl.innerText = "⚠️ Fill all fields.";
         return;
       }
 
-      btn.disabled = true;
+      const options = {
+        key: "rzp_test_MnQiSkCVoyyZYM",
+        amount: 1000,
+        currency: "INR",
+        name: "Chads Comments",
+        description: "Get your comment featured!",
+        handler: async function () {
+          await postComment(user, comment, video);
+        },
+        theme: { color: "#3399cc" }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    };
+
+    async function postComment(user, comment, videoUrl) {
+      const msgEl = document.getElementById("msg");
+      const btn = document.querySelector(".post-btn");
+
       msgEl.innerText = "⏳ Posting...";
+      btn.disabled = true;
 
       try {
         const { error } = await supabase
-          .from('Comments')
-          .insert([{ username: user, comment }]);
+          .from("Comments")
+          .insert([{ username: user, comment: comment, video_url: videoUrl }]);
 
         if (error) throw error;
 
         msgEl.innerText = "✅ Comment posted!";
         document.getElementById("username").value = "";
         document.getElementById("comment").value = "";
-      } catch (error) {
-        msgEl.innerText = "❌ Failed to post comment.";
-        console.error("Error details:", error);
+        document.getElementById("videoUrl").value = "";
+      } catch (err) {
+        console.error(err);
+        msgEl.innerText = "❌ Post failed.";
       } finally {
         btn.disabled = false;
         setTimeout(() => { msgEl.innerText = ""; }, 3000);
       }
-    };
+    }
   </script>
 </body>
 </html>
