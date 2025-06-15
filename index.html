@@ -219,7 +219,7 @@
 
       try {
         const { error } = await supabase
-          .from("Comments")
+          .from("comments")
           .insert([{ username: user, comment: comment, video_url: videoUrl }]);
 
         if (error) throw error;
